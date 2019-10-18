@@ -10,7 +10,7 @@ var flash = require('connect-flash')
 var userRouter = require('./routes/user')
 var indexRouter = require('./routes/index');
 var expresshbs = require('express-handlebars')
-
+var MongoStore = require('connect-mongo')(session);
 
 
 var app = express();
@@ -27,7 +27,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser());
-app.use(session({ secret: 'mysupersecret', resave: false, saveUninitialized: false }))
+app.use(session({
+  secret: 'mysupersecret',
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  cookie: { maxAge: 180 * 60 * 1000 }
+}))
 
 app.use(flash());
 app.use(passport.initialize());
@@ -36,7 +42,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
   res.locals.login = req.isAuthenticated();
-  next()
+  res.locals.session = req.session;
+  next();
 })
 
 app.use('/user', userRouter)
