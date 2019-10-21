@@ -15,7 +15,16 @@ var MongoStore = require('connect-mongo')(session);
 
 var app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/shopping')
+mongoose.connect('mongodb+srv://pristine:sandeep123@cluster0-7fxza.mongodb.net/shopping?retryWrites=true&w=majority',
+  { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+    if (err) {
+      console.log("error connection")
+    }
+    else {
+      console.log('connection successful')
+    }
+  })
+
 require('./config/passport')
 // view engine setup
 app.engine('.hbs', expresshbs({ defaultLayout: 'layout', extname: '.hbs' }));
