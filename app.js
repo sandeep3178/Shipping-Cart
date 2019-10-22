@@ -12,8 +12,9 @@ var indexRouter = require('./routes/index');
 var expresshbs = require('express-handlebars')
 var MongoStore = require('connect-mongo')(session);
 
-
+var port = process.env.PORT || 3000;
 var app = express();
+
 
 mongoose.connect('mongodb+srv://pristine:sandeep123@cluster0-7fxza.mongodb.net/shopping?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
@@ -73,5 +74,14 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.listen(port, function () {
+  console.log('Our app is running on http://localhost:' + port);
+});
+setInterval(() => {
+  wss.clients.forEach((client) => {
+    client.send(new Date().toTimeString());
+  });
+}, 1000);
 
 module.exports = app;
