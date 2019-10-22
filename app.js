@@ -78,10 +78,6 @@ app.use(function (err, req, res, next) {
 app.listen(port, function () {
   console.log('Our app is running on http://localhost:' + port);
 });
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString());
-  });
-}, 1000);
+
 
 module.exports = app;
